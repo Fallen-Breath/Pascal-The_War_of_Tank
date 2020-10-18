@@ -1,0 +1,34 @@
+uses sysutils,dos,crt;
+var r:tsearchrec;
+    i,n:longint;
+    s:array[1..100000] of string;
+    wtf:ansistring;   //which to find
+begin
+  if fsearch('findfiles.ini','\')='' then
+  begin
+    wtf:='*.*';
+  end
+   else begin
+     assign(input,'findfiles.ini');
+     reset(input);
+     readln(wtf);
+     close(input);
+   end;
+
+  n:=0;
+  i:=findfirst(wtf,faanyfile,r);
+  while I=0 do
+  begin
+    inc(n);
+    s[n]:=r.Name;
+    i:=findnext(r);
+  end;
+  findclose(r);
+
+  assign(output,'FindFilesResult.res');
+  rewrite(output);
+  writeln(n);
+  for i:=1 to n do
+    writeln(s[i]);
+  close(output);
+end.

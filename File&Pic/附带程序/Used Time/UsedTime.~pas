@@ -1,0 +1,71 @@
+uses crt;
+type arr=array[1..1000000] of longint;
+const max=11;
+      filename='UsedTime.log';
+      s:array[1..max] of string=('Before Work','Before Tick Wait','Work Mob','Work AI','Work Block','Print Game Info','Print Screen','Work Tip','Wait For Keypress','After Tick Wait','Tick Cost');
+var A:array[1..max] of arr;
+    i,n:longint;
+    f:text;
+    c:char;
+procedure sort(var aa:arr;l,r:longint);
+var x,y,i,j:longint;
+begin
+  i:=l;
+  j:=r;
+  x:=aa[(l+r)div 2];
+  repeat
+    while aa[i]<x do inc(i);
+    while aa[j]>x do dec(j);
+    if i<=j then
+    begin
+      y:=aa[i];
+      aa[i]:=aa[j];
+      aa[j]:=y;
+      inc(i);
+      dec(j);
+    end;
+  until i>j;
+  if i<r then sort(aa,i,r);
+  if l<j then sort(aa,l,j);
+end;
+begin
+  cursoroff;write('Loading...');
+  assign(f,filename);
+  reset(f);
+  n:=0;
+  repeat
+    i:=0;
+    repeat
+      read(f,c);
+      inc(i);
+    until (c=' ') or (i=100);
+    if i=100 then break;
+    inc(n);
+    //gotoxy(1,1);write(n);
+    for i:=1 to max do
+    begin
+      read(f,a[i,n]);
+      a[i,n]:=a[i,n]*10;
+    end;readln(f);
+  until eof(f);
+  dec(n);
+  close(f);clrscr;
+  for i:=1 to max do
+   sort(a[i],1,n);
+
+  writeln('Tick=',n);
+  writeln('Exit in Tick',n);
+  textcolor(15);
+  WRITELN('MAIN SET:20');
+  textcolor(7);
+  for i:=1 to max do
+   if s[i]<>'' then
+   begin
+     textcolor(15);write('MAX ');textcolor(7);
+     write(s[i],':',a[i,n]);
+     gotoxy(30,wherey);
+     textcolor(15);write('MIN ');textcolor(7);
+     writeln(s[i],':',a[i,1]);
+   end;
+  readkey;
+end.

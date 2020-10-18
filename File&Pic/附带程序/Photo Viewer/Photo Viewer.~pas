@@ -1,0 +1,61 @@
+Program Photo_Viewer;
+
+USES crt,dos,sysutils,betterinput;
+
+CONST maxx=38;
+      maxy=21;
+
+TYPE screen_type=record
+                   ch:string;
+                   col,bg:longint;
+                 end;
+
+VAR map:array[1..maxx,1..maxy] of screen_type;
+    fn:ansistring;
+
+procedure print;
+var i,j:longint;
+    s:string;
+begin
+  for i:=1 to maxy do
+   for j:=1 to maxx do
+    with map[j,i] do
+    begin
+      gotoxy(j*2+1,i+1);
+      tb(bg);tc(col);
+      write(ch);
+    end;//end with
+end;
+
+procedure fileread(s:ansistring);
+var wj:text;
+    i,j,a,b:longint;
+begin
+  assign(wj,s);
+  reset(wj);
+  for i:=1 to maxx do
+   for j:=1 to maxy do
+    with map[i,j] do
+    begin
+      readln(wj,col,bg,a,b);
+      ch:=chr(a)+chr(b);
+    end;//end with
+  close(wj);
+end;
+
+procedure init;
+var i:longint;
+begin
+  tb(0);tc(7);clrscr;
+  cursoroff;
+  randomize;
+  fn:=paramstr(1);
+  fileread(fn);
+end;
+
+BEGIN
+  if paramcount=0 then halt;
+  init;
+  print;
+  readkey;
+END.
